@@ -35,7 +35,7 @@ validate:
   stage: validate
   script:
     - cd "${TF_ROOT}"
-    - terraform init -input=false
+    - terraform init -backend=false
     - terraform validate
 
 plan:
