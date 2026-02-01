@@ -56,9 +56,9 @@ locals {
 # }
 
 locals {
-  api_name  = "nti-http-api"
-  api_stage = "dev"
-  api_route = "ANY /{proxy+}"
+  api_name              = "nti-http-api"
+  api_stage             = "dev"
+  api_route             = "ANY /{proxy+}"
   k8s_service_namespace = "default"
   k8s_service_name      = "hello-nlb"
   nlb_listener_port     = 80
