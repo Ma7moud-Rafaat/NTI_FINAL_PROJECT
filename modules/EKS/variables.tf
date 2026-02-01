@@ -27,7 +27,7 @@ variable "node_max_size" {
 variable "max_unavailable" {
   type = number
 }
-ariable "enable_node_remote_access" {
+variable "enable_node_remote_access" {
   type        = bool
   description = "Enable SSH remote access to EKS nodes"
   default     = false
