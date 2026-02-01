@@ -1,3 +1,7 @@
+workflow:
+  rules:
+    - when: always
+
 stages:
   - lint
   - validate
@@ -12,7 +16,6 @@ default:
 variables:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
-  # لو عندك أكثر من root module غيّرها
   TF_ROOT: "root_modules"
 
 cache:
@@ -25,8 +28,6 @@ fmt:
   script:
     - cd "${TF_ROOT}"
     - terraform fmt -check -recursive
-  rules:
-    - when: always
 
 validate:
   stage: validate
@@ -34,47 +35,16 @@ validate:
     - cd "${TF_ROOT}"
     - terraform init -input=false
     - terraform validate
-  rules:
-    - when: always
 
 plan:
   stage: plan
   script:
     - cd "${TF_ROOT}"
-    # Backend remote (اختياري) — شغّله لو أنت عامل S3 backend
-    - |
-      terraform init -input=false \
-        -backend-config="bucket=${TF_STATE_BUCKET}" \
-        -backend-config="key=${TF_STATE_KEY}" \
-        -backend-config="region=${AWS_DEFAULT_REGION}" \
-        -backend-config="encrypt=true"
+    - terraform init -input=false -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_DEFAULT_REGION}" -backend-config="dynamodb_table=${TF_STATE_DDB_TABLE}" -backend-config="encrypt=true"
     - terraform plan -out=tfplan
   artifacts:
     name: "tfplan-${CI_COMMIT_SHORT_SHA}"
     paths:
       - ${TF_ROOT}/tfplan
       - ${TF_ROOT}/.terraform.lock.hcl
-    expire_in: 1 day
-  rules:
-    - when: always
-
-apply:
-  stage: apply
-  script:
-    - cd "${TF_ROOT}"
-    - |
-      terraform init -input=false \
-        -backend-config="bucket=${TF_STATE_BUCKET}" \
-        -backend-config="key=${TF_STATE_KEY}" \
-        -backend-config="region=${AWS_DEFAULT_REGION}" \
-        -backend-config="dynamodb_table=${TF_STATE_DDB_TABLE}" \
-        -backend-config="encrypt=true"
-    - terraform apply -auto-approve tfplan
-  dependencies:
-    - plan
-  rules:
-    # apply فقط على main وبشكل يدوي
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-      allow_failure: false
-    - when: never
+    e
