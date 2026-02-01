@@ -26,6 +26,8 @@ module "EKS" {
   enable_node_remote_access = local.enable_node_remote_access
   ssh_key_name              = local.ssh_key_name
 }
+
+
 module "api_gateway" {
   source                = "../modules/apigateway"
   name                  = local.api_name

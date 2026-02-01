@@ -30,3 +30,10 @@ resource "aws_eks_node_group" "NTI_NODE_GR" {
     aws_iam_role_policy_attachment.ecr_read_only,
   ]
 }
+
+check "remote_access_requires_key" {
+  assert {
+    condition     = (!var.enable_node_remote_access) || (length(var.ssh_key_name) > 0)
+    error_message = "When enable_node_remote_access is true, ssh_key_name must be non-empty."
+  }
+}

@@ -31,9 +31,7 @@ variable "enable_node_remote_access" {
     type = bool
 }
 variable "ssh_key_name" {
-    type = string
-    validation {
-    condition     = var.enable_node_remote_access == false || (var.enable_node_remote_access == true && length(var.ssh_key_name) > 0)
-    error_message = "ssh_key_name must be set when enable_remote_access=true."
-  }
+  type        = string
+  default     = ""
 }
+
