@@ -31,11 +31,6 @@ variable "enable_node_remote_access" {
   type        = bool
   description = "Enable SSH remote access to EKS nodes"
   default     = false
-
-  validation {
-    condition     = (!var.enable_node_remote_access) || (length(var.ssh_key_name) > 0)
-    error_message = "When enable_node_remote_access is true, ssh_key_name must be non-empty."
-  }
 }
 variable "ssh_key_name" {
   type        = string
