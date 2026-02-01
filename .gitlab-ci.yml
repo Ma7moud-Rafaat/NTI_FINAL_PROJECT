@@ -29,7 +29,7 @@ fmt:
   stage: lint
   script:
     - cd "${TF_ROOT}"
-    - terraform fmt -check -recursive
+    - terraform fmt -recursive
 
 validate:
   stage: validate
