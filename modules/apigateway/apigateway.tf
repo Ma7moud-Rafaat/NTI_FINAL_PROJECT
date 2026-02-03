@@ -28,16 +28,16 @@ resource "aws_apigatewayv2_vpc_link" "NTI_VPC_LINK" {
   tags               = var.tags
 }
 
-data "aws_lb" "nlb" {
-  tags = {
-    "kubernetes.io/service-name" = local.k8s_service_tag
-  }
-}
+# data "aws_lb" "nlb" {
+#   tags = {
+#     "kubernetes.io/service-name" = local.k8s_service_tag
+#   }
+# }
 
-data "aws_lb_listener" "nlb_listener" {
-  load_balancer_arn = data.aws_lb.nlb.arn
-  port              = var.nlb_listener_port
-}
+# data "aws_lb_listener" "nlb_listener" {
+#   load_balancer_arn = data.aws_lb.nlb.arn
+#   port              = var.nlb_listener_port
+# }
 
 resource "aws_apigatewayv2_integration" "NTI_INTEGRATION" {
   api_id           = aws_apigatewayv2_api.NTI_API.id
@@ -46,7 +46,7 @@ resource "aws_apigatewayv2_integration" "NTI_INTEGRATION" {
   connection_type = "VPC_LINK"
   connection_id   = aws_apigatewayv2_vpc_link.NTI_VPC_LINK.id
 
-  integration_uri        = data.aws_lb_listener.nlb_listener.arn
+  # integration_uri        = data.aws_lb_listener.nlb_listener.arn
   integration_method     = "ANY"
   payload_format_version = "1.0"
 }

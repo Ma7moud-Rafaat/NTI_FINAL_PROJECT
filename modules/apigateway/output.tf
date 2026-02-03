@@ -13,7 +13,7 @@ output "vpclink_id" {
   value       = aws_apigatewayv2_vpc_link.NTI_VPC_LINK.id
 }
 
-output "nlb_arn" {
-  description = "Looked-up NLB ARN"
-  value       = data.aws_lb.nlb.arn
-}
+# output "nlb_arn" {
+#   description = "Looked-up NLB ARN"
+#   value       = data.aws_lb.nlb.arn
+# }

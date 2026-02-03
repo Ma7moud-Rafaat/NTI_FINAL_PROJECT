@@ -29,15 +29,9 @@ variable "max_unavailable" {
 }
 variable "enable_node_remote_access" {
   type        = bool
-  description = "Enable SSH remote access to EKS nodes"
-  default     = false
 }
 variable "ssh_key_name" {
   type        = string
-<<<<<<< HEAD
-=======
-  description = "EC2 key pair name for node remote access. Leave empty if remote access is disabled."
->>>>>>> 99d40710c9e2a66d0fc4d28a37b6ec204d94311d
   default     = ""
 }
 
