@@ -42,7 +42,7 @@ plan:
   stage: plan
   script:
     - cd "${TF_ROOT}"
-    - terraform init -input=false -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_DEFAULT_REGION}" -backend-config="dynamodb_table=${TF_STATE_DDB_TABLE}" -backend-config="encrypt=true"
+    - terraform init -input=false -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_DEFAULT_REGION}" 
     - terraform plan -out=tfplan
   artifacts:
     name: "tfplan-${CI_COMMIT_SHORT_SHA}"
