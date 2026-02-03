@@ -51,8 +51,8 @@ plan:
       - ${TF_ROOT}/.terraform.lock.hcl
     expire_in: 1 day
 
-apply:
-  stage: apply
-  script:
-    - cd "${TF_ROOT}"
-    - terraform init -input=false -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_DEFAULT_REGION}" -backend-config="d
+# apply:
+#   stage: apply
+#   script:
+#     - cd "${TF_ROOT}"
+#     - terraform init -input=false -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_DEFAULT_REGION}" -backend-config="d
