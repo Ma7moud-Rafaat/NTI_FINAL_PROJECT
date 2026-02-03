@@ -1,0 +1,45 @@
+stages: [deploy]
+
+deploy_nlp_web:
+  stage: deploy
+  image: amazon/aws-cli:2.15.0
+  before_script:
+    - aws --version
+    - |
+      curl -L -o /usr/local/bin/kubectl \
+        "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x /usr/local/bin/kubectl
+    - kubectl version --client
+    - aws eks update-kubeconfig --region "$AWS_REGION" --name "$EKS_CLUSTER_NAME"
+  script:
+    - kubectl apply -f k8s/namespace.yaml
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
+    - kubectl rollout status deployment/nlp-web -n nlp --timeout=300s
+
+    - |
+      echo "Waiting for LoadBalancer endpoint..."
+      for i in $(seq 1 60); do
+        HOST=$(kubectl get svc nlp-web-svc -n nlp -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || true)
+        if [ -n "$HOST" ]; then
+          NLP_ENDPOINT="http://$HOST"
+          echo "NLP_ENDPOINT=$NLP_ENDPOINT" | tee nlp.env
+          break
+        fi
+        sleep 5
+      done
+      test -f nlp.env
+
+    # store endpoint for API Gateway pipeline
+    - |
+      source nlp.env
+      aws ssm put-parameter \
+        --name "/nlp/web/endpoint" \
+        --type "String" \
+        --value "$NLP_ENDPOINT" \
+        --overwrite \
+        --region "$AWS_REGION"
+  artifacts:
+    reports:
+      dotenv: nlp.env
+    expire_in: 7 days
